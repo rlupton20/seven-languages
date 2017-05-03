@@ -8,7 +8,7 @@ end
 
 
 def make_a_guess
-  puts "Make a guess:"
+  print "Make a guess: "
   gets.to_i
 end
 
