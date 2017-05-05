@@ -1,5 +1,5 @@
 class File
-  def numbered_lines(&block)
+  def numbered_lines
     i = 0
     while line = self.gets
       yield i, line
@@ -11,7 +11,6 @@ end
 
 def rubygrep(term, file)
   regex = Regexp.new(term)
-  i = 0
   File.open(file, 'r') do |f|
     f.numbered_lines do |i, line|
       if regex.match(line)
