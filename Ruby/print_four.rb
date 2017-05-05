@@ -2,7 +2,7 @@ array = (1..16).to_a
 
 
 class Array
-  def each_4(&block)
+  def each_4
     i = 0
     while i < self.length
       yield self.slice(i,4)
