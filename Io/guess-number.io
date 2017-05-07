@@ -11,6 +11,9 @@ while( i > 0 and guess != number,
         if(guess == number, "Success!" println,
                 if((number - guess)**2 < (number - previous)**2,
                         "Warmer" println,
-                        "Colder" println));)
+                        "Colder" println));
+        i = i - 1;)
+
+if(i == 0, "Out of tries" println)
 
 stdin close
