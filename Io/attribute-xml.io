@@ -22,19 +22,24 @@ Map atPutNumber := method(
 // DSL, and avoids being recursive.
 AttrBuilder := Object clone
 AttrBuilder forward := method(Map clone)
+
 // Utility to render attributes as a string
 AttrBuilder render := method(attributes,
         if(attributes type == "Map",
                 init := "" asMutable
                 attributes foreach(k, v, init appendSeq(" ", k, "=", v serialized))
                 init,
-                ""))
+                ""
+        )
+)
+
 
 // XML builder
 Builder := Object clone
 Builder indent := 0
 Builder tab := method(
-        for(i, 0, self indent, " " print))
+        for(i, 0, self indent, " " print)
+)
 
 Builder forward := method(
         attributes := if(call argAt(0), AttrBuilder doMessage(call argAt(0)), Map clone)
