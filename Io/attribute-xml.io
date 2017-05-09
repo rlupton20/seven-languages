@@ -15,21 +15,26 @@ Map atPutNumber := method(
 )
 
 
-// XML builder
-Builder := Object clone
-Builder indent := 0
-Builder tab := method(
-        for(i, 0, self indent, " " print))
-
-
+// Because Builder forward (below) is heavily stateful, the
+// order it writes to screen matters, and at the same time,
+// recursive,  it's convenient to have a special attribute
+// builder, which only responds to the attribute part of the
+// DSL, and avoids being recursive.
 AttrBuilder := Object clone
-AttrBuilder forward := method("")
+AttrBuilder forward := method(Map clone)
+// Utility to render attributes as a string
 AttrBuilder render := method(attributes,
         if(attributes type == "Map",
                 init := "" asMutable
                 attributes foreach(k, v, init appendSeq(" ", k, "=", v serialized))
                 init,
                 ""))
+
+// XML builder
+Builder := Object clone
+Builder indent := 0
+Builder tab := method(
+        for(i, 0, self indent, " " print))
 
 Builder forward := method(
         attributes := if(call argAt(0), AttrBuilder doMessage(call argAt(0)), Map clone)
