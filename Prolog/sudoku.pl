@@ -101,3 +101,14 @@ test(X) :- sudoku([6,_,_,9,_,_,_,_,5,
 		   _,9,_,_,_,_,_,5,_,
 		   7,3,_,_,1,_,_,8,9,
 		   4,_,_,5,_,_,_,_,6], X).
+
+solve(X) :- test(X), pretty_print(X,3).
+
+pretty_print([A1,A2,A3,A4,A5,A6,A7,A8,A9|Tail], Z) :- write(A1), tab(1), write(A2), tab(1), write(A3), tab(2),
+						      write(A4), tab(1), write(A5), tab(1), write(A6), tab(2),
+						      write(A7), tab(1), write(A8), tab(1), write(A9), write('\n'),
+						      (Z = 1 ->
+							   write('\n'), pretty_print(Tail, 3)
+						      ;
+						           write(''), Z2 is Z - 1, pretty_print(Tail, Z2)).
+						      
