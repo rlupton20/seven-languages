@@ -6,8 +6,8 @@ object Hello extends Greeting with App {
   println(greeting)
 
   var game = new Game()
+  var turn: Piece = X
   while( game.winner == Blank && !game.noBlanks ) {
-    var turn = X
 
 
     println("Which row?")
@@ -15,8 +15,11 @@ object Hello extends Greeting with App {
     println("Which column?")
     var col = readInt
 
-    
+    game = game.place(turn, row, col)
+    game.printBoard()
+    if ( turn == X ) { turn = O } else { turn = X }
   }
+  println(game.state)
 }
 
 trait Greeting {
