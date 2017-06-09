@@ -9,6 +9,7 @@ case object Blank extends Piece {
 
 
 class Game(board: List[Piece]) {
+  // Alternative constructor for a new game (no pieces played)
   def this() {
     this(List(Blank,Blank,Blank,Blank,Blank,Blank,Blank,Blank,Blank))
   }
@@ -16,10 +17,17 @@ class Game(board: List[Piece]) {
   def element(i: Int, j: Int): Piece = board(index(i,j))
 
   // Methods for all the lines on the board
-  def row(n: Int): (Piece, Piece, Piece) = (element(n,1),element(n,2),element(n,3))
-  def column(n: Int): (Piece, Piece, Piece) = (element(1,n),element(2,n),element(3,n))
-  def diagonal1(): (Piece, Piece, Piece) = (element(1,1),element(2,2),element(3,3))
-  def diagonal2(): (Piece, Piece, Piece) = (element(3,1),element(2,2),element(1,3))
+  def row(n: Int): (Piece, Piece, Piece) =
+    (element(n,1),element(n,2),element(n,3))
+
+  def column(n: Int): (Piece, Piece, Piece) =
+    (element(1,n),element(2,n),element(3,n))
+
+  def diagonal1(): (Piece, Piece, Piece) =
+    (element(1,1),element(2,2),element(3,3))
+
+  def diagonal2(): (Piece, Piece, Piece) =
+    (element(3,1),element(2,2),element(1,3))
 
   // Method to test whether all elements of a 3-tuple are equal
   def allSame(line: (Piece, Piece, Piece)): Boolean =
