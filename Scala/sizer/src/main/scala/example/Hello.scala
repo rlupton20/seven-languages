@@ -58,9 +58,8 @@ class Aggregator extends Actor with ActorLogging {
       log.info(s"$url has size: $size")
     case NumberOfLinks(url, links) =>
       log.info(s"$url has $links hyperlinks")
-    case LinkSteps(links) => {
+    case LinkSteps(links) =>
       links.map{ link => sender() ! Sizer.RecursiveSize(link) }
-    }
     case _ => log.info("Bad message received")
   }
 }
@@ -84,7 +83,6 @@ class Sizer(aggregator: ActorRef) extends Actor with ActorLogging {
     case CountLinks(url) =>
       aggregator ! Aggregator.NumberOfLinks(url, HTML.getNumberOfLinks(url))
     case RecursiveSize(url) => {
-      log.info(s"Got recurse on $url")
       aggregator ! Aggregator.SizeOf(url, HTML.getPage(url).length)
       aggregator ! Aggregator.LinkSteps(HTML.getLinks(url))
     }
