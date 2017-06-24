@@ -5,3 +5,5 @@ Scala/tictactoe/project/target
 Scala/sizer/target
 Scala/sizer/project/target
 *.beam
+Erlang/otplog/rebar.lock
+Erlang/otplog/_build
