@@ -51,6 +51,7 @@ mergeSortWith cmp = head . until hasLengthOne (mergePairs cmp) . unitize
     hasLengthOne :: [a] -> Bool
     hasLengthOne = (==1) . length
 
+    -- Space leak safe version of until
     until :: (a -> Bool) -> (a -> a) -> a -> a
     until test f x = case test x of
       True -> x
@@ -158,20 +159,21 @@ untilNextSpace :: String -> Int
 untilNextSpace s = let spaces = untilWord s in
   spaces + untilSpace (drop spaces s)
 
-splitLine :: Int -> String -> [String]
-splitLine limit ss = go ss [] "" 0
+splitFirstLine :: Int -> String -> (String, String)
+splitFirstLine limit ss = go ss "" 0
   where
-    go "" ts "" _ = reverse ts
-    go "" ts l _ = reverse $ l : ts
-    go s ts l c
-      | c == 0 && untilSpace s > limit =
-          let notSpace = not . isSpace
-              dropUntilNextWord = dropWhile isSpace . dropWhile notSpace
-          in
-            go (dropUntilNextWord s) (takeWhile notSpace s : ts) "" 0
-      | c + untilNextSpace s > limit = go (dropWhile isSpace s) (l:ts) "" 0
+    go "" ws _ = (ws, "")
+    go s ws c
+      | c == 0 && untilNextSpace s > limit =
+          let beyondWord = untilNextSpace s in
+            (take beyondWord s, dropWhile isSpace . drop beyondWord $ s)
+      | c + untilNextSpace s > limit = (ws, dropWhile isSpace s)
       | otherwise = let jump = untilNextSpace s in
-          go (drop jump s) ts (l ++ (take jump s)) (c + jump)
+          go (drop jump s) (ws ++ take jump s) (c + jump)
+
+splitLine :: Int -> String -> [String]
+splitLine limit ss = let (f,r) = splitFirstLine limit ss in
+  f : if r == "" then [] else splitLine limit r
 
 splitText :: Int -> String -> [String]
 splitText limit = concatMap (splitLine limit) . lines
@@ -179,3 +181,11 @@ splitText limit = concatMap (splitLine limit) . lines
 -- Split text with line numbers
 numberedSplitText :: Int -> String -> [(Integer, String)]
 numberedSplitText limit = zip [0..] . splitText limit
+
+
+-- Justify text
+justify :: Int -> (String -> String) -> String -> [String]
+justify limit policy = map policy . splitText limit
+
+left :: (String -> String)
+left = id
