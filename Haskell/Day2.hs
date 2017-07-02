@@ -184,8 +184,33 @@ numberedSplitText limit = zip [0..] . splitText limit
 
 
 -- Justify text
-justify :: Int -> (String -> String) -> String -> [String]
-justify limit policy = map policy . splitText limit
+justify :: Int -> (Int -> String -> String) -> String -> [String]
+justify limit policy = map (policy limit) . splitText limit
 
-left :: (String -> String)
-left = id
+left :: Int -> String -> String
+left _ = id
+
+right :: Int -> String -> String
+right limit line = let buffer = limit - length line in
+  replicate buffer ' ' ++ line
+
+fully :: Int -> String -> String
+fully limit line = let numSpaces = length ( words line ) - 1
+                       buffer = limit - length line
+                       base = buffer `div` numSpaces
+                       bigger = buffer `mod` numSpaces
+                       lead = takeWhile isSpace line
+                       core = dropWhile isSpace line
+                   in
+                     lead ++ pad (numSpaces, bigger, base) core
+  where
+    pad :: (Int,Int,Int) -> String -> String
+    pad (0,_,_) s = s
+    pad (n,0,p) s = let jump = untilNextWord s in
+                      take jump s ++ replicate p ' ' ++ pad (n-1,0,p) (drop jump s)
+    pad (n,m,p) s = let jump = untilNextWord s in
+                  take jump s ++ replicate (p+1) ' ' ++ pad (n-1, m-1, p) (drop jump s)
+
+    untilNextWord :: String -> Int
+    untilNextWord s = let w = untilSpace s in
+      w + untilWord (drop w s)
