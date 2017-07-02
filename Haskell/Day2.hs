@@ -55,7 +55,7 @@ mergeSortWith cmp = head . until hasLengthOne (mergePairs cmp) . unitize
     until :: (a -> Bool) -> (a -> a) -> a -> a
     until test f x = case test x of
       True -> x
-      False -> let x' = f x in x' `seq` (until test f $ x')
+      False -> let x' = f x in x' `seq` until test f x'
 
     unitize :: [a] -> [[a]]
     unitize = map (\x -> [x])
